@@ -14,6 +14,11 @@
       text-align: center;
       padding: 20px;
     }
+
+    .screen {
+      display: block;
+    }
+
     .tile-container {
       display: flex;
       justify-content: center;
@@ -40,17 +45,31 @@
 
     .container { 
       background: url(./img/back.jpg) ;
-      width:100%;
+      background-repeat: no-repeat;
+      max-width:1200px;
       height:800px;
       display: flex;
       justify-content: center;
       align-items: center;
+      margin: 0 auto;
+    }
+
+    .tile-container-empty {
+      height: 100px;
+    }
+
+    #empty{
+      height: 140px;
+      display: block;
     }
 
   </style>
 </head>
 <body>
 
+<!-- ゲーム画面 -->
+
+<div id="gameScreen" class="screen hidden">
 <div class="container">
   <div class="container_game">
     <h1>麻雀牌覚える君</h1>
@@ -61,8 +80,10 @@
     </div>
 
     <div class="tile-container">
+      <span id="empty"></span>
       <img id="leftTile" class="tile" src="" alt="左の牌" />
       <img id="rightTile" class="tile" src="" alt="右の牌" />
+
     </div>
 
     <div class="result" id="resultText"></div>
@@ -73,9 +94,11 @@
     </div>
   </div>
 </div> 
+</div>
  </body> 
 
   <script>
+
     const startButton = document.getElementById("startButton");
     const resetButton = document.getElementById("resetButton");
     const leftTile = document.getElementById("leftTile");
@@ -83,6 +106,7 @@
     const resultText = document.getElementById("resultText");
     const correctCountSpan = document.getElementById("correctCount");
     const wrongCountSpan = document.getElementById("wrongCount");
+    const empty = document.getElementById("empty")
 
     const suits = ["man", "pin", "sou"];
     let correctCount = 0;
@@ -97,6 +121,8 @@
       return { number, suit };
     }
 
+
+
     function getImagePath(tile) {
       switch (tile.suit) {
         case "man":
@@ -109,6 +135,7 @@
           return "";
       }
     }
+
 
     function setTiles() {
       let left, right;
@@ -127,6 +154,7 @@
 
       leftTile.style.display = "block";
       rightTile.style.display = "block";
+      empty.style.display = "none";
 
       resultText.textContent = "";
       clickable = true;
@@ -135,9 +163,14 @@
     
       //牌の画像をクリックしたときに正解か不正解かを判定して、結果を表示・カウントする
     function handleClick(isLeft) {
+
+      //clickableがfalseなら何も起きないようにする
       if (!clickable) return;
+      //clickableをfalseにしてクリックできないようにする
       clickable = false;
 
+      //左をクリック→isLeftはtrue→selectedはleftValue、otherはrightValue
+      //右をクリック→isLeftはfalse→selectedはrightValue、otherはleftValue（三項演算子）
       const selected = isLeft ? leftValue : rightValue;
       const other = isLeft ? rightValue : leftValue;
 
@@ -168,7 +201,9 @@
       rightTile.src = "";
       leftTile.style.display = "none";
       rightTile.style.display = "none";
+      empty.style.display = "block";
     });
+
   </script>
 </body>
 
